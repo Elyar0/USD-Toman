@@ -2,6 +2,7 @@
 ```
 Gnome-Shell v.(47) Extension, for conversion of Dollar (USD) to Rs (PKR).
 
+```
 # How to install
 ```
 Install from gnome extensions website:
