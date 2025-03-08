@@ -1,0 +1,119 @@
+/* extension.js
+ * https://github.com/shoaibzs/Dollar-PKR-47
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+'use strict';
+
+import St from 'gi://St'
+import Gio from 'gi://Gio'
+import Clutter from 'gi://Clutter'
+import Soup from 'gi://Soup'
+import GLib from 'gi://GLib'
+
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+
+let panelButton;
+let panelButtonText;
+let session;
+let dollarQuotation;
+let sourceId = null;
+
+// Handle Requests API Dollar
+async function handle_request_dollar_api() {
+    let dollarQuotation = null;
+    let upDown = null;
+    let upDownIcon = null;
+    
+    try {
+        // Create a new Soup Session
+        if (!session) {
+            session = new Soup.Session({ timeout: 10 });
+        }
+
+        // Create body of Soup request
+        let message = Soup.Message.new_from_encoded_form(
+            "GET", "https://economia.awesomeapi.com.br/last/USD-PKR", Soup.form_encode_hash({}));
+
+        // Send Soup request to API Server
+        await session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (_, r0) => {
+            let text = session.send_and_read_finish(r0);
+            let response = new TextDecoder().decode(text.get_data());
+            const body_response = JSON.parse(response);
+
+            // Get the value of Dollar Quotation
+            upDown = body_response["USDPKR"]["varBid"];
+            dollarQuotation = body_response["USDPKR"]["bid"];
+            dollarQuotation = dollarQuotation.split(".");
+            dollarQuotation = dollarQuotation[0] + "," + dollarQuotation[1].substring(0, 2);
+            parseFloat(upDown) > 0 ? upDownIcon = " 🡱" : upDownIcon = " 🡳";
+            
+            // Sext text in Widget
+            panelButtonText = new St.Label({
+            style_class : "cPanelText",
+                text: "1 USD = " + dollarQuotation + " PKR (" + upDownIcon + " )",
+                y_align: Clutter.ActorAlign.CENTER,
+            });
+            panelButton.set_child(panelButtonText);
+
+            // Finish Soup Session
+            session.abort();
+            text = undefined;
+            response = undefined;
+        });
+    } catch (error) {
+        console.error(`Traceback Error in [handle_request_dollar_api]: ${error}`);
+        panelButtonText = new St.Label({
+            text: "(1 USD = " + _dollarQuotation + ")" + " * ",
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        panelButton.set_child(panelButtonText);
+        session.abort();
+    }
+}
+
+export default class Extension {
+    enable() {
+        panelButton = new St.Bin({
+            style_class: "panel-button",
+        });
+    
+        handle_request_dollar_api();
+        Main.panel._centerBox.insert_child_at_index(panelButton, 0);
+        sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 30, () => {
+            handle_request_dollar_api();
+            return GLib.SOURCE_CONTINUE;
+        });
+    }
+
+    disable() {
+        Main.panel._centerBox.remove_child(panelButton);
+
+        if (panelButton) {
+            panelButton.destroy();
+            panelButton = null;
+        }
+    
+        if (sourceId) {
+            GLib.Source.remove(sourceId);
+            sourceId = null;
+        }
+        
+        if (session) {
+            session.abort(session);
+            session = null;
+        }
+    }
+}

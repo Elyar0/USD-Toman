@@ -1,0 +1,8 @@
+{
+    "uuid": "currency-converter@shoaibzs.github.com",
+    "name": "Currency Converter",
+    "description": "USD (US Dollar) converted to PKR (Pakistan Rs).",
+    "version": 12,
+    "shell-version": ["47"],
+    "url": "https://github.com/shoaibzs/"
+}
