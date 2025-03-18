@@ -1,8 +1,13 @@
 {
-    "uuid": "dollar-pkr@shoaibzs.github.com",
-    "name": "Dollar-PKR",
-    "description": "USD (US Dollar) converted to PKR (Pakistan Rs) ",
-    "version": 1,
-    "shell-version": ["47"],
-    "url": "https://github.com/shoaibzs/"
+  "description": "USD (US Dollar) converted to PKR (Pakistan Rs) ",
+  "name": "Dollar-PKR",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48"
+  ],
+  "url": "https://github.com/shoaibzs/Dollar-PKR/",
+  "uuid": "dollar-pkr@shoaibzs.github.com",
+  "version": 13
 }
