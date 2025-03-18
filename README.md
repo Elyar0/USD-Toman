@@ -1,6 +1,6 @@
 # Dollar-PKR
 ```
-Gnome-Shell v.(47) Extension, for conversion of Dollar (USD) to Rs (PKR).
+Gnome-Shell v.(45, 46, 47, 48) Extension, for conversion of Dollar (USD) to Rs (PKR).
 
 ```
 # How to install
@@ -10,7 +10,7 @@ https://extensions.gnome.org/extension/4869/dollar-pkr/
 
 or
 
-cd /tmp && git clone https://github.com/shoaibzs/Dollar-PKR-47.git && mv dollar-pkr dollar-pkr@shoaibzs.github.com && cp -av dollar-pkr@shoaibzs.github.com ~/.local/share/gnome-shell/extensions/ && gnome-shell-extension-tool --enable-extension dollar-pkr@shoaibzs.github.com && rm -rf dollar-pkr@shoaibzs.github.com .
+cd /tmp && git clone https://github.com/shoaibzs/Dollar-PKR.git && mv dollar-pkr dollar-pkr@shoaibzs.github.com && cp -av dollar-pkr@shoaibzs.github.com ~/.local/share/gnome-shell/extensions/ && gnome-shell-extension-tool --enable-extension dollar-pkr@shoaibzs.github.com && rm -rf dollar-pkr@shoaibzs.github.com .
 
 Or
 
