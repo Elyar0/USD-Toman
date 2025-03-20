@@ -1,4 +1,4 @@
-# Dollar-PKR
+# USD-Toman
 ```
 Gnome-Shell v.(45, 46, 47, 48) Extension, for conversion of Dollar (USD) to Toman (Iranian Toman).
 
