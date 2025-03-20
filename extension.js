@@ -61,7 +61,7 @@ async function handle_request_dollar_api() {
             // Sext text in Widget
             panelButtonText = new St.Label({
                 style_class: "cPanelText",
-                text: "1 USD = " + dollarQuotation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " TMN (" + upDownIcon + " )",
+                text: "1$ = " + dollarQuotation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " IRR(T) " + upDownIcon,
                 y_align: Clutter.ActorAlign.CENTER,
             });
             panelButton.set_child(panelButtonText);
@@ -74,7 +74,7 @@ async function handle_request_dollar_api() {
     } catch (error) {
         console.error(`Traceback Error in [handle_request_dollar_api]: ${error}`);
         panelButtonText = new St.Label({
-            text: "(1 USD = " + _dollarQuotation + ")" + " * ",
+            text: "(1$ =  " + _dollarQuotation + ")" + " * ",
             y_align: Clutter.ActorAlign.CENTER,
         });
         panelButton.set_child(panelButtonText);
