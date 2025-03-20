@@ -99,6 +99,11 @@ export default class Extension {
     disable() {
         Main.panel._centerBox.remove_child(panelButton);
 
+        if (panelButtonText) {
+            panelButtonText.destroy();
+            panelButtonText = null;
+        }
+
         if (panelButton) {
             panelButton.destroy();
             panelButton = null;
