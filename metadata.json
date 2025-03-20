@@ -1,13 +1,13 @@
 {
-  "description": "USD (US Dollar) converted to PKR (Pakistan Rs) ",
-  "name": "Dollar-PKR",
+  "description": "USD (US Dollar) converted to Toman (Iranian Toman)",
+  "name": "Dollar-Toman",
   "shell-version": [
     "45",
     "46",
     "47",
     "48"
   ],
-  "url": "https://github.com/shoaibzs/Dollar-PKR/",
+  "url": "https://github.com/Elyar0/Dollar-Toman",
   "uuid": "dollar-pkr@shoaibzs.github.com",
-  "version": 13
+  "version": 1
 }

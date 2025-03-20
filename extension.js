@@ -36,16 +36,16 @@ async function handle_request_dollar_api() {
     let dollarQuotation = null;
     let upDown = null;
     let upDownIcon = null;
-    
+
     try {
         // Create a new Soup Session
         if (!session) {
-            session = new Soup.Session({ timeout: 10 });
+            session = new Soup.Session({timeout: 10});
         }
 
         // Create body of Soup request
         let message = Soup.Message.new_from_encoded_form(
-            "GET", "https://economia.awesomeapi.com.br/last/USD-PKR", Soup.form_encode_hash({}));
+            "GET", "https://brsapi.ir/FreeTsetmcBourseApi/Api_Free_Gold_Currency_v2.json", Soup.form_encode_hash({}));
 
         // Send Soup request to API Server
         await session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (_, r0) => {
@@ -54,16 +54,14 @@ async function handle_request_dollar_api() {
             const body_response = JSON.parse(response);
 
             // Get the value of Dollar Quotation
-            upDown = body_response["USDPKR"]["varBid"];
-            dollarQuotation = body_response["USDPKR"]["bid"];
-            dollarQuotation = dollarQuotation.split(".");
-            dollarQuotation = dollarQuotation[0] + "," + dollarQuotation[1].substring(0, 2);
+            upDown = body_response["currency"][0]['change_percent'];
+            dollarQuotation = body_response["currency"][0]['price'];
             parseFloat(upDown) > 0 ? upDownIcon = " 🡱" : upDownIcon = " 🡳";
-            
+
             // Sext text in Widget
             panelButtonText = new St.Label({
-            style_class : "cPanelText",
-                text: "1 USD = " + dollarQuotation + " PKR (" + upDownIcon + " )",
+                style_class: "cPanelText",
+                text: "1 USD = " + dollarQuotation + " TMN (" + upDownIcon + " )",
                 y_align: Clutter.ActorAlign.CENTER,
             });
             panelButton.set_child(panelButtonText);
@@ -89,7 +87,7 @@ export default class Extension {
         panelButton = new St.Bin({
             style_class: "panel-button",
         });
-    
+
         handle_request_dollar_api();
         Main.panel._centerBox.insert_child_at_index(panelButton, 0);
         sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 30, () => {
@@ -105,12 +103,12 @@ export default class Extension {
             panelButton.destroy();
             panelButton = null;
         }
-    
+
         if (sourceId) {
             GLib.Source.remove(sourceId);
             sourceId = null;
         }
-        
+
         if (session) {
             session.abort(session);
             session = null;
