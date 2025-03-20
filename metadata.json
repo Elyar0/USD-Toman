@@ -1,13 +1,13 @@
 {
   "description": "USD (US Dollar) converted to Toman (Iranian Toman)",
-  "name": "Dollar-Toman",
+  "name": "USD-Toman",
   "shell-version": [
     "45",
     "46",
     "47",
     "48"
   ],
-  "url": "https://github.com/Elyar0/Dollar-Toman",
-  "uuid": "dollar-toman@elyarranjbar.ir",
+  "url": "https://github.com/Elyar0/USD-Toman",
+  "uuid": "usd-toman@elyarranjbar.ir",
   "version": 1
 }

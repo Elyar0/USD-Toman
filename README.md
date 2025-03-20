@@ -1,20 +1,12 @@
 # Dollar-PKR
 ```
-Gnome-Shell v.(45, 46, 47, 48) Extension, for conversion of Dollar (USD) to Rs (PKR).
+Gnome-Shell v.(45, 46, 47, 48) Extension, for conversion of Dollar (USD) to Toman (Iranian Toman).
 
 ```
 # How to install
 ```
-Install from gnome extensions website:
-https://extensions.gnome.org/extension/4869/dollar-pkr/
 
-or
-
-cd /tmp && git clone https://github.com/shoaibzs/Dollar-PKR.git && mv dollar-pkr dollar-pkr@shoaibzs.github.com && cp -av dollar-pkr@shoaibzs.github.com ~/.local/share/gnome-shell/extensions/ && gnome-shell-extension-tool --enable-extension dollar-pkr@shoaibzs.github.com && rm -rf dollar-pkr@shoaibzs.github.com .
-
-Or
-
-just download dollar-pkr@shoaibzs.github.com.zip form releases and unzip dollar-pkr@shoaibzs.github.com to ~/.local/share/gnome-shell/extensions/ .
+cd /tmp && git clone https://github.com/Elyar0/USD-Toman.git && mv USD-Toman usd-toman@elyarranjbar.ir && cp -av usd-toman@elyarranjbar.ir ~/.local/share/gnome-shell/extensions/ && gnome-extensions enable usd-toman@elyarranjbar.ir && rm -rf usd-toman@elyarranjbar.ir
 
 ```
 To restart GNOME Shell in X11, pressing Alt+F2 to open the Run Dialog and enter restart 
