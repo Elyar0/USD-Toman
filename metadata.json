@@ -1,5 +1,5 @@
 {
-  "description": "USD (US Dollar) converted to Toman (Iranian Toman), this extension is using brsapi.ir services.\n\n It is a fork of Dollar-PKR.",
+  "description": "USD (US Dollar) converted to Toman (Iranian Toman), this extension is using priceto.day services.\n\n It is a fork of Dollar-PKR.",
   "name": "USD-Toman",
   "shell-version": [
     "45",
