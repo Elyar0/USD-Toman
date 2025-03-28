@@ -45,7 +45,7 @@ async function handle_request_dollar_api() {
 
         // Create body of Soup request
         let message = Soup.Message.new_from_encoded_form(
-            "GET", "https://brsapi.ir/FreeTsetmcBourseApi/Api_Free_Gold_Currency_v2.json", Soup.form_encode_hash({}));
+            "GET", "https://api.priceto.day/v1/latest/irr/usd", Soup.form_encode_hash({}));
 
         // Send Soup request to API Server
         await session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (_, r0) => {
@@ -54,14 +54,12 @@ async function handle_request_dollar_api() {
             const body_response = JSON.parse(response);
 
             // Get the value of Dollar Quotation
-            upDown = body_response["currency"][0]['change_percent'];
-            dollarQuotation = body_response["currency"][0]['price'];
-            parseFloat(upDown) > 0 ? upDownIcon = " 🡱" : upDownIcon = " 🡳";
+            dollarQuotation = body_response["price"];
 
             // Sext text in Widget
             panelButtonText = new St.Label({
                 style_class: "cPanelText",
-                text: "1$ = " + dollarQuotation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " IRR(T) " + upDownIcon,
+                text: "1$ = " + dollarQuotation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " IRR(T) ",
                 y_align: Clutter.ActorAlign.CENTER,
             });
             panelButton.set_child(panelButtonText);
