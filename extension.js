@@ -54,7 +54,7 @@ async function handle_request_dollar_api() {
             const body_response = JSON.parse(response);
 
             // Get the value of Dollar Quotation
-            dollarQuotation = body_response["price"];
+            dollarQuotation = parseInt(body_response["price"]) / 10;
 
             // Sext text in Widget
             panelButtonText = new St.Label({
