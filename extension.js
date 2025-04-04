@@ -45,7 +45,7 @@ async function handle_request_dollar_api() {
 
         // Create body of Soup request
         let message = Soup.Message.new_from_encoded_form(
-            "GET", "https://api.priceto.day/v1/latest/irr/usd", Soup.form_encode_hash({}));
+            "GET", "https://currency.servicefather.ir/api/v1/currencies/usd", Soup.form_encode_hash({}));
 
         // Send Soup request to API Server
         await session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (_, r0) => {
@@ -54,7 +54,7 @@ async function handle_request_dollar_api() {
             const body_response = JSON.parse(response);
 
             // Get the value of Dollar Quotation
-            dollarQuotation = parseInt(body_response["price"]) / 10;
+            dollarQuotation = parseInt(body_response["data"]["usd"]["rate"]) / 10;
 
             // Sext text in Widget
             panelButtonText = new St.Label({
