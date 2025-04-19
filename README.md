@@ -15,4 +15,4 @@ cd /tmp && git clone https://github.com/Elyar0/USD-Toman.git && mv USD-Toman usd
 ```
 To restart GNOME Shell in X11, pressing Alt+F2 to open the Run Dialog and enter restart 
 (or just r). 
-In Wayland Logout and Login agaian.
+In Wayland Logout and Login again.
