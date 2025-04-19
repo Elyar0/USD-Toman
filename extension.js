@@ -54,12 +54,14 @@ async function handle_request_dollar_api() {
             const body_response = JSON.parse(response);
 
             // Get the value of Dollar Quotation
+            upDown = body_response["data"]["usd"]['diff'];
+            parseFloat(upDown) > 0 ? upDownIcon = " 🡱" : upDownIcon = " 🡳";
             dollarQuotation = parseInt(body_response["data"]["usd"]["rate"]) / 10;
 
             // Sext text in Widget
             panelButtonText = new St.Label({
                 style_class: "cPanelText",
-                text: "1$ = " + dollarQuotation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " IRR(T) ",
+                text: "1$ = " + dollarQuotation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " IRR(T) " + upDownIcon,
                 y_align: Clutter.ActorAlign.CENTER,
             });
             panelButton.set_child(panelButtonText);
