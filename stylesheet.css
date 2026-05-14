@@ -2,3 +2,10 @@
   color: White;
 }
 
+.priceDecrease {
+  color: #FB2C36;
+}
+
+.priceIncrease {
+  color: #00C951;
+}
