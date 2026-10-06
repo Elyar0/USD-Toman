@@ -39,7 +39,7 @@ async function handle_request_dollar_api() {
 
         const diff = parseFloat(data?.data?.diff ?? 0);
         const isPriceIncreased = diff === 0 ? null : diff > 0;
-        const upDownIcon = isPriceIncreased === null ? '' : (isPriceIncreased ? '🡱' : '🡳');
+        const upDownIcon = isPriceIncreased === null ? '' : (isPriceIncreased ? '↑' : '↓');
 
         const rate = parseInt(data?.data?.rate ?? 0);
         const displayValue = rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
