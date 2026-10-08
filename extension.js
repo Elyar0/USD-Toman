@@ -11,6 +11,7 @@ let panelBox;                // BoxLayout container (replaces Bin)
 let panelButtonText;         // St.Label
 let panelButtonIndicator;    // St.Label
 let session;                 // Soup.Session
+let cancellable = null;      // Gio.Cancellable for in-flight requests
 let sourceId = null;
 let arrows = null;           // chosen arrow pair, cached per enable()
 
@@ -51,8 +52,13 @@ async function handle_request_dollar_api() {
         const bytes = await session.send_and_read_async(
             message,
             GLib.PRIORITY_DEFAULT,
-            null
+            cancellable
         );
+
+        // The extension may have been disabled while the request was in flight
+        if (!panelBox) {
+            return;
+        }
 
         // Optional: check HTTP status
         if (message.get_status() !== Soup.Status.OK) {
@@ -100,6 +106,10 @@ async function handle_request_dollar_api() {
         centerInk(panelButtonIndicator);
         centerInk(panelButtonText);
     } catch (error) {
+        if (!panelBox || error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
+            return;
+        }
+
         logError(error, 'handle_request_dollar_api');
         if (!panelButtonText) {
             panelButtonText = newCenteredLabel({
@@ -115,6 +125,8 @@ async function handle_request_dollar_api() {
 
 export default class Extension {
     enable() {
+        cancellable = new Gio.Cancellable();
+
         panelBox = new St.BoxLayout({
             style_class: 'panel-button',
             y_expand: true
@@ -152,6 +164,11 @@ export default class Extension {
             }
             panelBox.destroy();
             panelBox = null;
+        }
+
+        if (cancellable) {
+            cancellable.cancel();
+            cancellable = null;
         }
 
         if (session) {
