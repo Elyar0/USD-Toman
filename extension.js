@@ -23,6 +23,21 @@ function pickArrows(actor) {
     return layout.get_unknown_glyphs_count() === 0 ? FANCY_ARROWS : BASIC_ARROWS;
 }
 
+// Fonts put glyphs at different heights inside their line box, so shift the
+// label until the visible glyphs (ink), not the line box, sit on the center
+function centerInk(label) {
+    const [ink, logical] = label.get_clutter_text().get_layout().get_pixel_extents();
+    const offset = (ink.y + ink.height / 2) - (logical.y + logical.height / 2);
+    label.translation_y = ink.height > 0 ? -Math.round(offset) : 0;
+}
+
+function newCenteredLabel(params) {
+    const label = new St.Label({ y_align: Clutter.ActorAlign.CENTER, ...params });
+    // Re-measure once the theme font is applied
+    label.connect_after('style-changed', () => centerInk(label));
+    return label;
+}
+
 async function handle_request_dollar_api() {
     try {
         if (!session) {
@@ -55,10 +70,9 @@ async function handle_request_dollar_api() {
 
         // Update/create labels
         if (!panelButtonText) {
-            panelButtonText = new St.Label({
+            panelButtonText = newCenteredLabel({
                 style_class: 'cPanelText',
                 text: `1$ = ${displayValue}T`,
-                y_align: Clutter.ActorAlign.CENTER,
                 style: 'line-height: 1; font-size: 14px;',
             });
             panelBox.add_child(panelButtonText);
@@ -67,8 +81,7 @@ async function handle_request_dollar_api() {
         }
 
         if (!panelButtonIndicator) {
-            panelButtonIndicator = new St.Label({
-                y_align: Clutter.ActorAlign.CENTER,
+            panelButtonIndicator = newCenteredLabel({
                 style: 'line-height: 1; font-size: 12px;',
             });
             panelBox.add_child(panelButtonIndicator);
@@ -84,17 +97,19 @@ async function handle_request_dollar_api() {
 
         panelButtonIndicator.get_clutter_text().set_line_alignment(0);
         panelButtonText.get_clutter_text().set_line_alignment(0);
+        centerInk(panelButtonIndicator);
+        centerInk(panelButtonText);
     } catch (error) {
         logError(error, 'handle_request_dollar_api');
         if (!panelButtonText) {
-            panelButtonText = new St.Label({
+            panelButtonText = newCenteredLabel({
                 text: '1$ = — T',
-                y_align: Clutter.ActorAlign.CENTER,
             });
             panelBox.add_child(panelButtonText);
         } else {
             panelButtonText.text = '1$ = — T';
         }
+        centerInk(panelButtonText);
     }
 }
 
