@@ -12,6 +12,16 @@ let panelButtonText;         // St.Label
 let panelButtonIndicator;    // St.Label
 let session;                 // Soup.Session
 let sourceId = null;
+let arrows = null;           // chosen arrow pair, cached per enable()
+
+// Prefer the nicer arrows; fall back when no installed font has the glyphs
+const FANCY_ARROWS = { up: '🡱', down: '🡳' };
+const BASIC_ARROWS = { up: '↑', down: '↓' };
+
+function pickArrows(actor) {
+    const layout = actor.create_pango_layout(FANCY_ARROWS.up + FANCY_ARROWS.down);
+    return layout.get_unknown_glyphs_count() === 0 ? FANCY_ARROWS : BASIC_ARROWS;
+}
 
 async function handle_request_dollar_api() {
     try {
@@ -39,7 +49,6 @@ async function handle_request_dollar_api() {
 
         const diff = parseFloat(data?.data?.diff ?? 0);
         const isPriceIncreased = diff === 0 ? null : diff > 0;
-        const upDownIcon = isPriceIncreased === null ? '' : (isPriceIncreased ? '↑' : '↓');
 
         const rate = parseInt(data?.data?.rate ?? 0);
         const displayValue = rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -59,16 +68,19 @@ async function handle_request_dollar_api() {
 
         if (!panelButtonIndicator) {
             panelButtonIndicator = new St.Label({
-                style_class: isPriceIncreased ? 'priceIncrease' : 'priceDecrease',
-                text: upDownIcon,
                 y_align: Clutter.ActorAlign.CENTER,
                 style: 'line-height: 1; font-size: 12px;',
             });
             panelBox.add_child(panelButtonIndicator);
-        } else {
-            panelButtonIndicator.style_class = isPriceIncreased ? 'priceIncrease' : 'priceDecrease';
-            panelButtonIndicator.text = upDownIcon;
         }
+
+        if (!arrows) {
+            arrows = pickArrows(panelButtonIndicator.get_clutter_text());
+        }
+
+        const upDownIcon = isPriceIncreased === null ? '' : (isPriceIncreased ? arrows.up : arrows.down);
+        panelButtonIndicator.style_class = isPriceIncreased ? 'priceIncrease' : 'priceDecrease';
+        panelButtonIndicator.text = upDownIcon;
 
         panelButtonIndicator.get_clutter_text().set_line_alignment(0);
         panelButtonText.get_clutter_text().set_line_alignment(0);
@@ -131,5 +143,7 @@ export default class Extension {
             session.abort();
             session = null;
         }
+
+        arrows = null;
     }
 }
