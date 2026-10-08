@@ -9,20 +9,10 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 let panelBox;                // BoxLayout container (replaces Bin)
 let panelButtonText;         // St.Label
-let panelButtonIndicator;    // St.Label
+let panelButtonIndicator;    // St.Icon
 let session;                 // Soup.Session
 let cancellable = null;      // Gio.Cancellable for in-flight requests
 let sourceId = null;
-let arrows = null;           // chosen arrow pair, cached per enable()
-
-// Prefer the nicer arrows; fall back when no installed font has the glyphs
-const FANCY_ARROWS = { up: '🡱', down: '🡳' };
-const BASIC_ARROWS = { up: '↑', down: '↓' };
-
-function pickArrows(actor) {
-    const layout = actor.create_pango_layout(FANCY_ARROWS.up + FANCY_ARROWS.down);
-    return layout.get_unknown_glyphs_count() === 0 ? FANCY_ARROWS : BASIC_ARROWS;
-}
 
 // Fonts put glyphs at different heights inside their line box, so shift the
 // label until the visible glyphs (ink), not the line box, sit on the center
@@ -87,23 +77,19 @@ async function handle_request_dollar_api() {
         }
 
         if (!panelButtonIndicator) {
-            panelButtonIndicator = newCenteredLabel({
-                style: 'line-height: 1; font-size: 12px;',
+            panelButtonIndicator = new St.Icon({
+                y_align: Clutter.ActorAlign.CENTER,
             });
             panelBox.add_child(panelButtonIndicator);
         }
 
-        if (!arrows) {
-            arrows = pickArrows(panelButtonIndicator.get_clutter_text());
+        panelButtonIndicator.visible = isPriceIncreased !== null;
+        if (isPriceIncreased !== null) {
+            panelButtonIndicator.icon_name = isPriceIncreased ? 'go-up-symbolic' : 'go-down-symbolic';
+            panelButtonIndicator.style_class = isPriceIncreased ? 'priceIncrease' : 'priceDecrease';
         }
 
-        const upDownIcon = isPriceIncreased === null ? '' : (isPriceIncreased ? arrows.up : arrows.down);
-        panelButtonIndicator.style_class = isPriceIncreased ? 'priceIncrease' : 'priceDecrease';
-        panelButtonIndicator.text = upDownIcon;
-
-        panelButtonIndicator.get_clutter_text().set_line_alignment(0);
         panelButtonText.get_clutter_text().set_line_alignment(0);
-        centerInk(panelButtonIndicator);
         centerInk(panelButtonText);
     } catch (error) {
         if (!panelBox || error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
@@ -118,6 +104,9 @@ async function handle_request_dollar_api() {
             panelBox.add_child(panelButtonText);
         } else {
             panelButtonText.text = '1$ = — T';
+        }
+        if (panelButtonIndicator) {
+            panelButtonIndicator.visible = false;
         }
         centerInk(panelButtonText);
     }
@@ -175,7 +164,5 @@ export default class Extension {
             session.abort();
             session = null;
         }
-
-        arrows = null;
     }
 }

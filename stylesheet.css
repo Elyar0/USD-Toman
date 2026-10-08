@@ -9,3 +9,8 @@
 .priceIncrease {
   color: #00C951;
 }
+
+.priceIncrease,
+.priceDecrease {
+  icon-size: 12px;
+}
