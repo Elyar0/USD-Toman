@@ -13,6 +13,7 @@ let panelButtonIndicator;    // St.Icon
 let session;                 // Soup.Session
 let cancellable = null;      // Gio.Cancellable for in-flight requests
 let sourceId = null;
+let trendIcons = null;       // bundled up/down Gio.Icons, created per enable()
 
 // Fonts put glyphs at different heights inside their line box, so shift the
 // label until the visible glyphs (ink), not the line box, sit on the center
@@ -85,7 +86,7 @@ async function handle_request_dollar_api() {
 
         panelButtonIndicator.visible = isPriceIncreased !== null;
         if (isPriceIncreased !== null) {
-            panelButtonIndicator.icon_name = isPriceIncreased ? 'go-up-symbolic' : 'go-down-symbolic';
+            panelButtonIndicator.gicon = isPriceIncreased ? trendIcons.up : trendIcons.down;
             panelButtonIndicator.style_class = isPriceIncreased ? 'priceIncrease' : 'priceDecrease';
         }
 
@@ -115,6 +116,12 @@ async function handle_request_dollar_api() {
 export default class Extension {
     enable() {
         cancellable = new Gio.Cancellable();
+
+        const iconsDir = Gio.File.new_for_uri(import.meta.url).get_parent().get_child('icons');
+        trendIcons = {
+            up: new Gio.FileIcon({ file: iconsDir.get_child('trend-up-symbolic.svg') }),
+            down: new Gio.FileIcon({ file: iconsDir.get_child('trend-down-symbolic.svg') }),
+        };
 
         panelBox = new St.BoxLayout({
             style_class: 'panel-button',
@@ -164,5 +171,7 @@ export default class Extension {
             session.abort();
             session = null;
         }
+
+        trendIcons = null;
     }
 }
